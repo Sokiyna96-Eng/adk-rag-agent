@@ -1,0 +1,42 @@
+
+services:
+
+  ### 🚀 FastAPI Backend
+  backend:
+    container_name: rag_api_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PROJECT_ID=adk-rag-poc-464605
+      - LOCATION=us-central1
+      - GOOGLE_GENAI_USE_VERTEXAI=True
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/vertex-sa-key.json  
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/vertex-sa-key.json:/app/vertex-sa-key.json     
+    networks:
+      - rag_net
+
+  ### 💬 Streamlit Frontend
+  frontend:
+    container_name: rag_ui_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    environment:
+      - API_URL=http://backend:8000
+    volumes:
+      - ./frontend/app:/app/app
+    networks:
+      - rag_net
+
+networks:
+  rag_net:
+    name: rag_network

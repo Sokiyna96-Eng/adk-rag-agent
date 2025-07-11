@@ -35,7 +35,8 @@ root_agent = Agent(
     1. **Query Documents**: You can answer questions by retrieving relevant information from document corpora.
     2. **List Corpora**: You can list all available document corpora to help users understand what data is available.
     3. **Create Corpus**: You can create new document corpora for organizing information.
-    4. **Add New Data**: You can add new documents (Google Drive URLs, etc.) to existing corpora.
+    4. **Add New Data**: You can add new documents to existing corpora using Google Drive URLs, GCS paths, or uploaded PDF files (which I’ll upload to GCS for you).
+
     5. **Get Corpus Info**: You can provide detailed information about a specific corpus, including file metadata and statistics.
     6. **Delete Document**: You can delete a specific document from a corpus when it's no longer needed.
     7. **Delete Corpus**: You can delete an entire corpus and all its associated files when it's no longer needed.
@@ -72,6 +73,9 @@ root_agent = Agent(
        - Parameters:
          - corpus_name: The name of the corpus to add data to (required, but can be empty to use current corpus)
          - paths: List of Google Drive or GCS URLs
+         - local_files: Optional list of local PDF file paths (these will be uploaded to GCS) 
+         - gcs_bucket: Required if using `local_files`, specifies which GCS bucket to upload the files to
+
     
     5. `get_corpus_info`: Get detailed information about a specific corpus
        - Parameters:
