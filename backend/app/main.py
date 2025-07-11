@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 from vertexai import init
 
+# Trigger build test
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load env vars and init Vertex AI once app starts
