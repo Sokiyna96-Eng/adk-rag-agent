@@ -1,14 +1,15 @@
 steps:
-  # Step 1: Build the Docker image
+  # Step 1: Build the Docker image from backend directory
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'build',
+        '-f', 'backend/Dockerfile',
         '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/adk-rag-backend/adk-rag-backend',
-        '.'
+        'backend'
       ]
 
-  # Step 2: Push the image to Artifact Registry
+  # Step 2: Push to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
