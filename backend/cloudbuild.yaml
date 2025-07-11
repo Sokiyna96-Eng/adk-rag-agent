@@ -1,3 +1,6 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
   # Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
@@ -19,5 +22,6 @@ steps:
         '--set-env-vars',
         'PROJECT_ID=adk-rag-poc-464605,LOCATION=us-central1,GOOGLE_GENAI_USE_VERTEXAI=True'
       ]
+
 images:
   - 'gcr.io/$PROJECT_ID/adk-rag-backend'
