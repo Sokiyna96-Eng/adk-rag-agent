@@ -2,15 +2,14 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from rag_agent.routers.upload_api import router as upload_router
 from rag_agent.routers.rag_query import router as query_router
+from rag_agent.routers.chat import router as chat_router  
+
 import os
 from dotenv import load_dotenv
 from vertexai import init
 
-# Trigger build test
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Load env vars and init Vertex AI once app starts
     load_dotenv()
     project_id = os.getenv("PROJECT_ID")
     location = os.getenv("LOCATION")
@@ -18,20 +17,17 @@ async def lifespan(app: FastAPI):
     print(" PROJECT_ID (lifespan):", project_id)
     print(" LOCATION (lifespan):", location)
 
-
     if project_id and location:
         print(" Initializing Vertex AI from lifespan")
         init(project=project_id, location=location)
     else:
         print(" Vertex AI init skipped: Missing config")
 
-    yield  # App is running
-
-    # Optional: cleanup code here if needed
+    yield
 
 app = FastAPI(lifespan=lifespan)
 
 # Register routers
 app.include_router(upload_router)
 app.include_router(query_router)
-#trigger build
+app.include_router(chat_router)  
