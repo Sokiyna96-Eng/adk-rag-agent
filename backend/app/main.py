@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from backend.app.rag_agent.routers.files import router as upload_router
-from backend.app.rag_agent.routers.query import router as query_router
-from rag_agent.routers.chat import router as chat_router  
+from rag_agent.routers.files import router as upload_router
+from rag_agent.routers.query import router as query_router
+from rag_agent.routers.chat import router as chat_router
 
 import os
 from dotenv import load_dotenv
@@ -30,4 +30,4 @@ app = FastAPI(lifespan=lifespan)
 # Register routers
 app.include_router(upload_router)
 app.include_router(query_router)
-app.include_router(chat_router)  
+app.include_router(chat_router)
