@@ -14,8 +14,11 @@ dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]==0.34.0",
     "python-multipart==0.0.9",
-    "deprecated==1.2.18"
+    "deprecated==1.2.18",
+    "PyPDF2==3.0.1",
+    "python-docx==1.1.0"
 ]
+
 
 [tool.uv.workspace]
 members = [
