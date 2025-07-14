@@ -8,6 +8,9 @@ import os
 from dotenv import load_dotenv
 from vertexai import init
 
+
+print("GOOGLE_APPLICATION_CREDENTIALS:", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     load_dotenv()

@@ -2,14 +2,18 @@
 
 from fastapi import APIRouter, Form
 from fastapi.responses import JSONResponse
-from google.adk.runtime.runner import Runner
-from google.adk.runtime.context import InMemorySessionService
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
 
 from rag_agent.agent import root_agent  # your main Gemini agent
 
 router = APIRouter()
 
-runner = Runner(session_service=InMemorySessionService())
+runner = Runner(
+    agent=root_agent,
+    app_name="rag-app",
+    session_service=InMemorySessionService()
+)
 
 @router.post("/query")
 async def query_endpoint(
@@ -18,11 +22,9 @@ async def query_endpoint(
 ):
     try:
         response = runner.run(
-            agent=root_agent,
             prompt=f"Query the corpus named '{corpus_name}' for the following: {query}",
-            tool_context_inputs={"corpus_name": corpus_name},
+            tool_context_inputs={"corpus_name": corpus_name}
         )
-
         return JSONResponse(content={"query": query, "response": response})
 
     except Exception as e:

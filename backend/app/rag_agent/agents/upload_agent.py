@@ -10,10 +10,9 @@ from rag_agent.tools.list_corpora import list_corpora
 from rag_agent.tools.utils import check_corpus_exists  # if you later promote it as tool
 
 upload_agent = Agent(
-    id="upload-agent",
-    name="Upload Agent",
-    description="Handles file uploads, corpus creation, and document tracking.",
+    name="upload_agent",  
     model="gemini-1.5-flash",  # Ideal for fast tool routing
+    description="Handles file uploads, corpus creation, and document tracking.",
     tools=[
         list_corpora,
         create_corpus,
@@ -21,7 +20,7 @@ upload_agent = Agent(
         get_corpus_info,
     ],
     instruction="""
-You are the Upload Agent. Your role is to manage PDF document uploads and connect them to the correct RAG corpus.
+You are the upload_agent. Your role is to manage PDF document uploads and connect them to the correct RAG corpus.
 
 When a PDF is uploaded:
 1. Check if the target corpus exists.
