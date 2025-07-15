@@ -1,11 +1,10 @@
-# backend/app/rag_agent/routers/query.py
-
 from fastapi import APIRouter, Form
 from fastapi.responses import JSONResponse
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
+from google.genai.types import Content, Part
 
-from rag_agent.agent import root_agent  # your main Gemini agent
+from rag_agent.agent import root_agent
 
 router = APIRouter()
 
@@ -21,11 +20,22 @@ async def query_endpoint(
     corpus_name: str = Form("earthwork")
 ):
     try:
-        response = runner.run(
-            prompt=f"Query the corpus named '{corpus_name}' for the following: {query}",
+        response_events = runner.run(
+            user_id="rag_user",
+            session_id="query_session_default",
+            new_message=Content(role="user", parts=[Part(text=f"Query the corpus named '{corpus_name}' for: {query}")]),
             tool_context_inputs={"corpus_name": corpus_name}
         )
-        return JSONResponse(content={"query": query, "response": response})
+
+        final_response = None
+        for event in response_events:
+            if event.is_final_response():
+                final_response = event.content.parts[0].text
+
+        return JSONResponse(content={
+            "query": query,
+            "response": final_response
+        })
 
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
