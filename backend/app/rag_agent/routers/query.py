@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai.types import Content, Part
+import traceback
 
 from rag_agent.agent import root_agent
 
@@ -20,17 +21,21 @@ async def query_endpoint(
     corpus_name: str = Form("earthwork")
 ):
     try:
-        # Include corpus_name in the user message itself
         user_message = (
             f"You are working with a RAG corpus named '{corpus_name}'. "
             f"Please answer the following query using documents from that corpus:\n\n{query}"
         )
+
+        print("🟡 Received query:", query)
+        print("🟢 Sending to runner...")
 
         response_events = runner.run(
             user_id="rag_user",
             session_id="query_session_default",
             new_message=Content(role="user", parts=[Part(text=user_message)])
         )
+
+        print("✅ Agent responded. Checking for final response...")
 
         final_response = None
         for event in response_events:
@@ -43,17 +48,6 @@ async def query_endpoint(
         })
 
     except Exception as e:
+        print("🔴 Exception during runner.run:")
+        traceback.print_exc()
         return JSONResponse(status_code=500, content={"error": str(e)})
-import traceback
-
-try:
-    response_events = runner.run(
-        user_id="rag_user",
-        session_id="query_session_default",
-        new_message=Content(role="user", parts=[Part(text=user_message)])
-    )
-except Exception as e:
-    print(" Full error during runner.run():")
-    traceback.print_exc()
-    raise
-
