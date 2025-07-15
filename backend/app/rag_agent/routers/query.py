@@ -20,11 +20,16 @@ async def query_endpoint(
     corpus_name: str = Form("earthwork")
 ):
     try:
+        # Include corpus_name in the user message itself
+        user_message = (
+            f"You are working with a RAG corpus named '{corpus_name}'. "
+            f"Please answer the following query using documents from that corpus:\n\n{query}"
+        )
+
         response_events = runner.run(
             user_id="rag_user",
             session_id="query_session_default",
-            new_message=Content(role="user", parts=[Part(text=f"Query the corpus named '{corpus_name}' for: {query}")]),
-            tool_context_inputs={"corpus_name": corpus_name}
+            new_message=Content(role="user", parts=[Part(text=user_message)])
         )
 
         final_response = None
@@ -39,3 +44,4 @@ async def query_endpoint(
 
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
+
