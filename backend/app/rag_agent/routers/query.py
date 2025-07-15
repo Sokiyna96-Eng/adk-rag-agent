@@ -44,4 +44,16 @@ async def query_endpoint(
 
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
+import traceback
+
+try:
+    response_events = runner.run(
+        user_id="rag_user",
+        session_id="query_session_default",
+        new_message=Content(role="user", parts=[Part(text=user_message)])
+    )
+except Exception as e:
+    print(" Full error during runner.run():")
+    traceback.print_exc()
+    raise
 
