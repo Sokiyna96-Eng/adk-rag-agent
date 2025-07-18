@@ -10,10 +10,9 @@ from rag_agent.tools.list_corpora import list_corpora
 from rag_agent.tools.utils import check_corpus_exists  # if you later promote it as tool
 
 upload_agent = Agent(
-    id="upload-agent",
-    name="Upload Agent",
-    description="Handles file uploads, corpus creation, and document tracking.",
+    name="upload_agent",  
     model="gemini-1.5-flash",  # Ideal for fast tool routing
+    description="Handles file uploads, corpus creation, and document tracking.",
     tools=[
         list_corpora,
         create_corpus,
@@ -21,19 +20,27 @@ upload_agent = Agent(
         get_corpus_info,
     ],
     instruction="""
-You are the Upload Agent. Your role is to manage PDF document uploads and connect them to the correct RAG corpus.
+You are the upload_agent. Your role is to manage PDF document uploads and connect them to the correct RAG corpus.
 
 When a PDF is uploaded:
-1. Check if the target corpus exists.
-2. If not, create it using `create_corpus`.
-3. Upload the file using `add_data`, passing the local path and GCS bucket.
-4. After upload, call `get_corpus_info` to show updated file count and metadata.
-5. Track `current_corpus` and `uploaded_files` in your tool_context.state:
-    - state["current_corpus"] = corpus_name
-    - state["uploaded_files"].append(filename)
+1. Check if the target corpus exists using `list_corpora` or `get_corpus_info`.
+2. If the corpus does not exist, create it using `create_corpus` with the corpus name.
+3. Add the GCS file(s) to the corpus using `add_data` with:
+   - corpus_name: the target corpus name (e.g., 'earthwork')
+   - paths: list of GCS URIs (e.g., ['gs://bucket/path/file.pdf'])
+4. After adding files, call `get_corpus_info` to confirm the files were added successfully.
+5. Track the current corpus in your tool_context.state:
+   - state["current_corpus"] = corpus_name
+
+IMPORTANT: When you receive GCS URIs in the message, extract them and pass them directly to the `add_data` tool's `paths` parameter. Do not try to upload them again - they are already in GCS.
 
 You do not answer questions or query corpora. Your job is to prepare data for future retrieval and analysis.
 
-You can also list available corpora using `list_corpora` if needed.
+Example workflow:
+1. User provides: "Please add the following GCS file to the 'earthwork' corpus: gs://bucket/file.pdf"
+2. Check if 'earthwork' corpus exists
+3. If not, create it: create_corpus(corpus_name='earthwork')
+4. Add the file: add_data(corpus_name='earthwork', paths=['gs://bucket/file.pdf'])
+5. Verify: get_corpus_info(corpus_name='earthwork')
 """
 )

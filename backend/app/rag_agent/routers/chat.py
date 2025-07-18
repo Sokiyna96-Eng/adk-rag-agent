@@ -4,7 +4,7 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai.types import Content
 
-from rag_agent.agent import root_agent
+from app.rag_agent.agent import root_agent
 
 router = APIRouter()
 

@@ -1,0 +1,9 @@
+
+    This is a test document about earthwork operations.
+    Earthwork involves excavation, grading, and soil management.
+    Common earthwork activities include:
+    - Site preparation
+    - Foundation excavation
+    - Land grading
+    - Soil compaction
+    

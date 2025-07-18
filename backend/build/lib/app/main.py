@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from backend.app.rag_agent.routers.files import router as upload_router
-from backend.app.rag_agent.routers.query import router as query_router
-from rag_agent.routers.chat import router as chat_router  
+from rag_agent.routers.files import router as upload_router
+from rag_agent.routers.query import router as query_router
+from rag_agent.routers.chat import router as chat_router
 
 import os
 from dotenv import load_dotenv
 from vertexai import init
+
+
+print("GOOGLE_APPLICATION_CREDENTIALS:", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -18,16 +21,22 @@ async def lifespan(app: FastAPI):
     print(" LOCATION (lifespan):", location)
 
     if project_id and location:
-        print(" Initializing Vertex AI from lifespan")
+        print(" Initializing Vertex AI...")
         init(project=project_id, location=location)
     else:
-        print(" Vertex AI init skipped: Missing config")
+        print(" Skipping Vertex AI init (missing config)")
 
     yield
 
+#  This must match the location in Dockerfile: `main:app`
 app = FastAPI(lifespan=lifespan)
 
-# Register routers
+#  Basic health check (needed for Cloud Run to verify container started)
+@app.get("/")
+def health_check():
+    return {"status": "ok"}
+
+# Register routes
 app.include_router(upload_router)
 app.include_router(query_router)
-app.include_router(chat_router)  
+app.include_router(chat_router)

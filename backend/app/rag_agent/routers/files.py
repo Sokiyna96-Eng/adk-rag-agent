@@ -10,8 +10,8 @@ from google.genai.types import Content, Part
 from google.cloud import storage
 
 
-from rag_agent.agents.upload_agent import upload_agent
-from rag_agent.models.document import validate_document
+from app.rag_agent.agents.upload_agent import upload_agent
+from app.rag_agent.models.document import validate_document
 
 router = APIRouter()
 
@@ -64,8 +64,10 @@ async def file_upload(file: UploadFile = File(...)):
         )
 
         message = (
-            f"I've uploaded a file named {file.filename}. "
-            f"Please add it to the 'earthwork' corpus from path: {gcs_uri}."
+            f"Please add the following GCS file to the 'earthwork' corpus:\n"
+            f"GCS URI: {gcs_uri}\n"
+            f"File name: {file.filename}\n"
+            f"Use the add_data tool with paths=[{gcs_uri}] and corpus_name='earthwork'"
         )
 
         response_events = runner.run(
@@ -131,8 +133,9 @@ async def multi_file_upload(files: list[UploadFile] = File(...)):
         )
 
         message = (
-            f"I've uploaded {len(gcs_uris)} files. Please add them to the 'earthwork' corpus.\n"
-            + "\n".join(gcs_uris)
+            f"Please add the following GCS files to the 'earthwork' corpus:\n"
+            f"GCS URIs:\n" + "\n".join([f"- {uri}" for uri in gcs_uris]) + "\n"
+            f"Use the add_data tool with paths={gcs_uris} and corpus_name='earthwork'"
         )
 
         response_events = runner.run(

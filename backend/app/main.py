@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from rag_agent.routers.files import router as upload_router
-from rag_agent.routers.query import router as query_router
-from rag_agent.routers.chat import router as chat_router
+from app.rag_agent.routers.files import router as upload_router
+from app.rag_agent.routers.query import router as query_router
+from app.rag_agent.routers.chat import router as chat_router
 
 import os
 from dotenv import load_dotenv
