@@ -52,7 +52,7 @@ async def query_endpoint(
         from google.adk.tools.tool_context import ToolContext
         
         # Create a temporary tool context for debugging
-        temp_context = ToolContext()
+        temp_context = ToolContext(invocation_context=None)
         temp_context.state = {}
         
         print(f"🔍 DEBUGGING: Checking corpus '{corpus_name}'...")
@@ -147,7 +147,7 @@ async def get_corpus_status(corpus_name: str):
         from rag_agent.tools.list_corpora import list_corpora
         from google.adk.tools.tool_context import ToolContext
         
-        temp_context = ToolContext()
+        temp_context = ToolContext(invocation_context=None)
         temp_context.state = {}
         
         # Check if corpus exists
